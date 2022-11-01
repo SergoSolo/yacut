@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask import abort, flash, redirect, render_template, request
+from flask import flash, redirect, render_template, request
 
 from . import app, db
 from .forms import URLForm
@@ -29,7 +29,5 @@ def index_view():
 
 @app.route('/<custom_id>', methods=['GET'])
 def link_redirect_view(custom_id):
-    urls = URL_map.query.filter_by(short=custom_id).first()
-    if urls is not None:
-        return redirect(urls.original, HTTPStatus.FOUND)
-    return abort(HTTPStatus.NOT_FOUND)
+    urls = URL_map.query.filter_by(short=custom_id).first_or_404()
+    return redirect(urls.original, HTTPStatus.FOUND)
